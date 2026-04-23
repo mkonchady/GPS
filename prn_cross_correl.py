@@ -18,8 +18,10 @@ def compare_prn_codes(prn1, prn2):
     p1 = np.array(prn1)
     p2 = np.array(prn2)
     
-    # Perform cross-correlation --'full' mode returns size N+M-1, 'same' returns size of first input
-    correlation = np.correlate(p1, p2, mode='full')
+    #*-- the product of ffts results in the frequency domain of the cross correlation
+    correlation = np.fft.ifft(np.fft.fft(p1) * np.conj(np.fft.fft(p2)))
+    correlation = np.real(correlation)
+    
     max_corr = np.max(np.abs(correlation))
     normalized_corr = max_corr / len(p1)
     return normalized_corr * 100.0  # return as percentage
